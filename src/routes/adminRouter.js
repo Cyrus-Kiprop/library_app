@@ -21,8 +21,7 @@ const books = [{
   read: false
 }];// acts as the datatase
 
-
-function routes(nav) {
+function router(nav) {
   adminRouter.route('/')
     .get((req, res) => {
       const url = 'mongodb://localhost:27017';
@@ -32,17 +31,18 @@ function routes(nav) {
         let client;
         try {
           client = await MongoClient.connect(url);
-          const db = client.db(dbName);
           debug('successfully connected to the database');
+          const db = client.db(dbName);
 
           const response = await db.collection('books').insertMany(books);
           res.json(response);
-        } catch (e) {
-          debug(e.stack);
+        } catch (err) {
+          debug(err.stack);
         }
         client.close();
       }());
     });
   return adminRouter;
 }
-module.exports = routes;
+
+module.exports = router;
